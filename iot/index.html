@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Motor Predictive Maintenance Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>⚡ Smart Motor Condition Monitoring & Fault Detection</h1>
+    <p>IoT Predictive Maintenance • Real-Time Sensor Telemetry</p>
+  </div>
+
+  <!-- Connection Bar -->
+  <div class="connect-bar">
+    <div class="connect-inputs">
+      <label for="espIpInput">ESP32 IP Address:</label>
+      <input type="text" id="espIpInput" placeholder="192.168.1.50">
+      <button id="btnConnect" class="btn btn-connect" onclick="handleConnectToggle()">Connect</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <div id="statusBadge" class="status-badge status-disconnected">
+        <span class="status-dot"></span>
+        <span id="statusText">Disconnected</span>
+      </div>
+      <label class="sim-toggle-label">
+        <input type="checkbox" id="simCheckbox" onchange="toggleSimMode(this.checked)">
+        <span>Demo / Test Mode</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Status / Alert Box -->
+  <div id="alertBox" class="alert-box info">
+    <h3 id="alertTitle">ℹ System Disconnected</h3>
+    <p id="alertMsg">ESP32 is not connected. Connect your ESP32 to Wi-Fi (<b>ACTFIBERNET</b>), check the IP address displayed on the LCD, enter it above, and click <b>Connect</b>.</p>
+  </div>
+
+    <!-- SMS Alert Notification Box -->
+  <div id="smsAlertBox" class="alert-box" style="background:#fff7ed; border-left:5px solid #ea580c; display:none; margin-bottom:20px;">
+    <h3 style="color:#c2410c; margin:0 0 4px 0;">📱 SMS Alert Dispatched</h3>
+    <p id="smsAlertMsg" style="color:#9a3412; margin:0; font-size:13px;">SMS Notification sent to registered mobile number.</p>
+  </div>
+
+  <!-- Metric KPI Cards -->
+  <div class="cards">
+    <!-- Card 1: Motor Status -->
+    <div class="card">
+      <h3>Motor Status</h3>
+      <h1 id="cardMotorStatus" class="val-muted">--</h1>
+      <p id="cardMotorRelay">Power Relay: --</p>
+    </div>
+
+    <!-- Card 2: Motor Health -->
+    <div class="card">
+      <h3>Motor Health Index</h3>
+      <h1 id="cardHealth" class="val-muted">--</h1>
+      <p id="cardHealthDesc">Predictive Condition: --</p>
+    </div>
+
+    <!-- Card 3: Vibration (MPU6050) -->
+    <div class="card">
+      <h3>Vibration (MPU6050)</h3>
+      <h1 id="cardVibration" class="val-muted">--</h1>
+      <p id="cardVibAxes">Limit: 18.0 m/s²</p>
+    </div>
+
+    <!-- Card 4: Current & Voltage (INA219) -->
+    <div class="card">
+      <h3>Current & Voltage</h3>
+      <h1 id="cardCurrent" class="val-muted">--</h1>
+      <p id="cardVoltage">Voltage: -- V | Power: -- mW</p>
+    </div>
+
+    <!-- Card 5: Temperature (DHT11) -->
+    <div class="card">
+      <h3>Temperature & Humidity</h3>
+      <h1 id="cardTemp" class="val-muted">--</h1>
+      <p id="cardHumidity">Humidity: -- % | Limit: 40.0°C</p>
+    </div>
+  </div>
+
+  <!-- Hardware Actuator Controls -->
+  <div class="controls-card">
+    <div>
+      <h3>Hardware Actuator Controls</h3>
+      <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280;">Control connected motor relay, cooling fan, and alarm buzzer on ESP32</p>
+    </div>
+    <div class="control-buttons">
+      <button id="btnMotor" class="btn-ctrl" onclick="toggleMotorRelay()">🛑 Cut Motor Power</button>
+      <button id="btnFan" class="btn-ctrl" onclick="toggleCoolingFan()">💨 Toggle Fan</button>
+      <button id="btnBuzzer" class="btn-ctrl" onclick="toggleAlarmBuzzer()">🔕 Silence Buzzer</button>
+    </div>
+  </div>
+
+  <!-- Live Telemetry Log Table -->
+  <div class="table-section">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+      <h2>Recent Telemetry Log</h2>
+      <button class="btn" style="background: #e5e7eb; color: #374151; font-size: 12px; padding: 5px 12px;" onclick="clearLogTable()">Clear Log</button>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Voltage (V)</th>
+            <th>Current (mA)</th>
+            <th>Power (mW)</th>
+            <th>Vibration (m/s²)</th>
+            <th>Temp (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Motor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="telemetryTableBody">
+          <tr>
+            <td colspan="9" style="color: #9ca3af; padding: 25px;">No telemetry received. Enter your ESP32 IP address above and click <b>Connect</b>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
